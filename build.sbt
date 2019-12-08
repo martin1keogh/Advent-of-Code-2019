@@ -1,4 +1,6 @@
-lazy val dependencies = Seq()
+lazy val dependencies = Seq(
+  "org.scalatest" %% "scalatest" % "3.1.0" % Test
+)
 
 lazy val commonSettings = Seq(
   scalaVersion := "2.13.1",
