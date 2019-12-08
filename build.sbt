@@ -48,6 +48,6 @@ lazy val commonSettings = Seq(
   libraryDependencies := dependencies
 )
 
-lazy val day1 =
-  (project in file("day1"))
+lazy val root =
+  (project in file("."))
     .settings(commonSettings: _*)
