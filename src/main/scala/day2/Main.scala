@@ -32,14 +32,22 @@ object Main extends AoCRunnable {
     subprocess(program, 0)
   }
 
-  // spec: set position 1 to 12 and 2 to 2 before running program
-  def restoreGravityProgram(program: Array[Int]): Array[Int] = {
-    program
-      .updated(1, 12)
-      .updated(2, 2)
+  def setNounAndVerb(noun: Int, verb: Int)(program: Array[Int]): Array[Int] = {
+    program.updated(1, noun).updated(2, verb)
+  }
+
+  def processFor(noun: Int, verb: Int): Int = {
+    program |> setNounAndVerb(noun, verb) |> process |> (_.head)
   }
 
   override val part1: Option[Int] = Some {
-    program |> restoreGravityProgram |> process |> (_.head)
+    processFor(12, 2)
+  }
+
+  override val part2: Option[Int] = {
+    Iterator
+      .tabulate(99, 99) { case (noun, verb) => (noun, verb) -> processFor(noun, verb) }
+      .flatten
+      .collectFirst { case ((noun, verb), 19690720) => noun * 100 + verb }
   }
 }
