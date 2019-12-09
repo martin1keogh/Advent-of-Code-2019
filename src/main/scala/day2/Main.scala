@@ -1,7 +1,6 @@
 package day2
 
-import common.AoCRunnable
-import common.ChainOps
+import common.{ AoCRunnable, ChainOps }
 
 import scala.annotation.tailrec
 
