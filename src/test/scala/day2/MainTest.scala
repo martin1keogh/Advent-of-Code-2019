@@ -1,13 +1,13 @@
 package day2
 
 import common.AoCExampleRunner
-import day2.Main.process
+import day2.Main.{ Program, runner }
 
 class MainTest extends AoCExampleRunner {
-  type Input = Array[Int]
-  type Output = Array[Int]
+  type Input = Program
+  type Output = Program
 
-  val examples = Map(
+  val examples: Map[Program, Program] = Map(
     "1,0,0,0,99" -> "2,0,0,0,99",
     "2,3,0,3,99" -> "2,3,0,6,99",
     "2,4,4,5,99,0" -> "2,4,4,5,99,9801",
@@ -16,7 +16,7 @@ class MainTest extends AoCExampleRunner {
     input.split(",").map(_.toInt) -> output.split(",").map(_.toInt)
   }
 
-  def method: Array[Int] => Array[Int] = process
+  def method: Program => Program = runner.runS(_).value
 
   "process" should { behave like examplesSolver() }
 }

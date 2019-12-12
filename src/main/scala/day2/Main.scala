@@ -1,42 +1,60 @@
 package day2
 
-import common.{ AoCRunnable, ChainOps }
-
-import scala.annotation.tailrec
+import cats.data.State
+import cats.syntax.monad._
+import common.AoCRunnable
 
 object Main extends AoCRunnable {
   override type Output = Int
   override val dayNumber: Int = 2
 
-  val program: Array[Int] = inputLines().next().split(",").map(_.toInt)
+  val program: Program = inputLines().next().split(",").map(_.toInt)
 
-  def process(program: Array[Int]): Array[Int] = {
-    @tailrec
-    def subprocess(output: Array[Int], index: Int): Array[Int] = output.slice(index, index + 4) match {
-      case Array(99, _*) => output
+  type Program = Array[Int]
+  type Pointer = Int
+  type ProgramOutput = Int
+  type NextInstruction = Int
 
-      case Array(opcode, input1Pos, input2Pos, outputPos) =>
-        val input1 = output(input1Pos)
-        val input2 = output(input2Pos)
+  def transitionFunction(program: Program, index: Pointer): Program = program.slice(index, index + 4) match {
+    case Array(opcode, input1Pos, input2Pos, outputPos) =>
+      val input1 = program(input1Pos)
+      val input2 = program(input2Pos)
 
-        val outputValue = opcode match {
-          case 1 => input1 + input2
-          case 2 => input1 * input2
-        }
+      val outputValue = opcode match {
+        case 1 => input1 + input2
+        case 2 => input1 * input2
+      }
 
-        val updatedOutput = output.updated(outputPos, outputValue)
-        subprocess(updatedOutput, index + 4)
-    }
-
-    subprocess(program, 0)
+      program.updated(outputPos, outputValue)
   }
 
-  def setNounAndVerb(noun: Int, verb: Int)(program: Array[Int]): Array[Int] = {
+  def setNounAndVerb(noun: Int, verb: Int)(program: Program): Program = {
     program.updated(1, noun).updated(2, verb)
   }
 
-  def processFor(noun: Int, verb: Int): Int = {
-    program |> setNounAndVerb(noun, verb) |> process |> (_.head)
+  def haltCondition(instruction: NextInstruction): Boolean = {
+    instruction == 99
+  }
+
+  val runner: State[Program, NextInstruction] = {
+    State[(Program, Pointer), NextInstruction] { case (currentProgram, pointer) =>
+      val newProgram = transitionFunction(currentProgram, pointer)
+      // This +4 might change with future specs, the new pointer value
+      // should probably be returned by transitionFunction
+      val newPointer = pointer + 4
+      ((newProgram, newPointer), newProgram(newPointer))
+    }
+    .iterateUntil(haltCondition)
+    .contramap[Program](_ -> 0) // add the value of the starting pointer
+    .modify(_._1)               // no point in giving access to the pointer value to callers
+  }
+
+  def processFor(noun: Int, verb: Int): ProgramOutput = {
+    runner
+      .contramap[Program](setNounAndVerb(noun, verb))
+      .modify(_.head)
+      .runS(program)
+      .value
   }
 
   override val part1: Option[Int] = Some {
