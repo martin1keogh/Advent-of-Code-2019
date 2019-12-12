@@ -4,7 +4,7 @@ import common.AoCRunnable
 
 import scala.annotation.tailrec
 
-object Main extends AoCRunnable {
+object Day1 extends AoCRunnable {
   override type Output = Int
   override val dayNumber: Int = 1
 

@@ -1,9 +1,9 @@
 package day3
 
 import common.AoCExampleRunner
-import day3.Main.{ buildCoveredPath, findLowestDistanceFromOrigin, parseInput }
+import day3.Day3.{ buildCoveredPath, findLowestDistanceFromOrigin, parseInput }
 
-class MainTest extends AoCExampleRunner {
+class Day3Test extends AoCExampleRunner {
   type Input = (Seq[Movement], Seq[Movement])
   type Output = Int
 

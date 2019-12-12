@@ -1,9 +1,9 @@
 package day2
 
 import common.AoCExampleRunner
-import day2.Main.{ Program, runner }
+import day2.Day2.{ Program, runner }
 
-class MainTest extends AoCExampleRunner {
+class Day2Test extends AoCExampleRunner {
   type Input = Program
   type Output = Program
 

@@ -4,7 +4,7 @@ import cats.data.State
 import cats.syntax.monad._
 import common.AoCRunnable
 
-object Main extends AoCRunnable {
+object Day2 extends AoCRunnable {
   override type Output = Int
   override val dayNumber: Int = 2
 

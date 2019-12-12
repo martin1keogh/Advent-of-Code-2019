@@ -2,7 +2,7 @@ package day3
 
 import common.{ AoCRunnable, ChainOps }
 
-object Main extends AoCRunnable {
+object Day3 extends AoCRunnable {
   override type Output = Int
   override val dayNumber: Int = 3
 
