@@ -36,7 +36,7 @@ object Main extends AoCRunnable {
     instruction == 99
   }
 
-  val runner: State[Program, NextInstruction] = {
+  val runner: State[Program, ProgramOutput] = {
     State[(Program, Pointer), NextInstruction] { case (currentProgram, pointer) =>
       val newProgram = transitionFunction(currentProgram, pointer)
       // This +4 might change with future specs, the new pointer value
@@ -46,14 +46,15 @@ object Main extends AoCRunnable {
     }
     .iterateUntil(haltCondition)
     .contramap[Program](_ -> 0) // add the value of the starting pointer
-    .modify(_._1)               // no point in giving access to the pointer value to callers
+    .transform { case ((program, _), _) =>
+      program -> program.head   // change the output of the program to be program[0], not the next instruction
+    }
   }
 
   def processFor(noun: Int, verb: Int): ProgramOutput = {
     runner
       .contramap[Program](setNounAndVerb(noun, verb))
-      .modify(_.head)
-      .runS(program)
+      .runA(program)
       .value
   }
 
