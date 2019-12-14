@@ -6,7 +6,7 @@ object Day3 extends AoCRunnable {
   override type Output = Int
   override val dayNumber: Int = 3
 
-  type CoveredPath = Set[Point]
+  type CoveredPath = Seq[Point]
 
   val List(wire1, wire2) = inputLines().take(2).toList.map(_.split(","))
 
@@ -30,16 +30,31 @@ object Day3 extends AoCRunnable {
 
       // unreachable, use NEL here?
       case (Nil, _) => Nil
-    }.toSet
+    }.reverse
   }
 
-  def findLowestDistanceFromOrigin(pathWire1: CoveredPath, pathWire2: CoveredPath): Option[Int] = {
-    ((pathWire1 intersect pathWire2) - Point.origin).map(_.manhattanDistanceFromOrigin).minOption
+  def findClosestIntersection(pathWire1: CoveredPath, pathWire2: CoveredPath): Option[Int] = {
+    // .tail call to remove Point.origin
+    (pathWire1 intersect pathWire2).tail.map(_.manhattanDistanceFromOrigin).minOption
+  }
+
+  def findEarliestIntersection(pathWire1: CoveredPath, pathWire2: CoveredPath): Option[Int] = {
+    // .tail call to remove Point.origin
+    val intersections = (pathWire1 intersect pathWire2).tail
+    intersections.map(p => pathWire1.indexOf(p) + pathWire2.indexOf(p)).minOption
+  }
+
+  private val coveredPaths = {
+    val cp1 = wire1.toSeq |> parseInput |> buildCoveredPath
+    val cp2 = wire2.toSeq |> parseInput |> buildCoveredPath
+    (cp1, cp2)
   }
 
   override val part1: Option[Int] = {
-    val cp1 = wire1.toSeq |> parseInput |> buildCoveredPath
-    val cp2 = wire2.toSeq |> parseInput |> buildCoveredPath
-    findLowestDistanceFromOrigin(cp1, cp2)
+    (findClosestIntersection _).tupled(coveredPaths)
+  }
+
+  override val part2: Option[Int] = {
+    (findEarliestIntersection _).tupled(coveredPaths)
   }
 }
