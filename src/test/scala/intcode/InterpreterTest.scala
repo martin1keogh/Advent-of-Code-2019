@@ -1,11 +1,11 @@
-package day2
+package intcode
 
 import common.AoCExampleRunner
-import day2.Day2.{ Program, runner }
+import intcode.Interpreter.{ Program, runner }
 
 import scala.collection.immutable.SeqMap
 
-class Day2Test extends AoCExampleRunner {
+class InterpreterTest extends AoCExampleRunner {
   type Input = Program
   type Output = Program
 
