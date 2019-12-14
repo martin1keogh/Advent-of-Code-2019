@@ -3,11 +3,13 @@ package day2
 import common.AoCExampleRunner
 import day2.Day2.{ Program, runner }
 
+import scala.collection.immutable.SeqMap
+
 class Day2Test extends AoCExampleRunner {
   type Input = Program
   type Output = Program
 
-  val examples: Map[Program, Program] = Map(
+  val examples: SeqMap[Program, Program] = SeqMap(
     "1,0,0,0,99" -> "2,0,0,0,99",
     "2,3,0,3,99" -> "2,3,0,6,99",
     "2,4,4,5,99,0" -> "2,4,4,5,99,9801",

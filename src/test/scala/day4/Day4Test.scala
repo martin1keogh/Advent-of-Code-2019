@@ -3,10 +3,12 @@ package day4
 import common.AoCExampleRunner
 import day4.Day4.validPasswordPart2
 
+import scala.collection.SeqMap
+
 class Day4Test extends AoCExampleRunner {
   override type Input = Int
   override type Output = Boolean
-  override val examples: Map[Int, Boolean] = Map(
+  override val examples: SeqMap[Int, Boolean] = SeqMap(
     111111 -> false,
     223450 -> false,
     123789 -> false,
