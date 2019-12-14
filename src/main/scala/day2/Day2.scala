@@ -58,11 +58,11 @@ object Day2 extends AoCRunnable {
       .value
   }
 
-  override val part1: Option[Int] = Some {
+  override lazy val part1: Option[Int] = Some {
     processFor(12, 2)
   }
 
-  override val part2: Option[Int] = {
+  override lazy val part2: Option[Int] = {
     Iterator
       .tabulate(99, 99) { case (noun, verb) => (noun, verb) -> processFor(noun, verb) }
       .flatten

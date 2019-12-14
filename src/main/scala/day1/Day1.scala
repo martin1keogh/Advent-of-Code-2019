@@ -26,6 +26,6 @@ object Day1 extends AoCRunnable {
 
   val masses: List[Int] = inputLines().map(_.toInt).toList
 
-  override val part1: Option[Int] = Some(masses.map(computeFuelForMass).sum)
-  override val part2: Option[Int] = Some(masses.map(computeTotalFuelForMass).sum)
+  override lazy val part1: Option[Int] = Some(masses.map(computeFuelForMass).sum)
+  override lazy val part2: Option[Int] = Some(masses.map(computeTotalFuelForMass).sum)
 }

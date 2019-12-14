@@ -6,8 +6,8 @@ trait AoCRunnable {
   type Output
   val dayNumber: Int
 
-  val part1: Option[Output] = None
-  val part2: Option[Output] = None
+  lazy val part1: Option[Output] = None
+  lazy val part2: Option[Output] = None
 
   def inputLines(): Iterator[String] = Source.fromResource(s"day$dayNumber/input.data").getLines()
 

@@ -50,11 +50,11 @@ object Day3 extends AoCRunnable {
     (cp1, cp2)
   }
 
-  override val part1: Option[Int] = {
+  override lazy val part1: Option[Int] = {
     (findClosestIntersection _).tupled(coveredPaths)
   }
 
-  override val part2: Option[Int] = {
+  override lazy val part2: Option[Int] = {
     (findEarliestIntersection _).tupled(coveredPaths)
   }
 }

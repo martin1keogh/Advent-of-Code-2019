@@ -22,11 +22,11 @@ object Day4 extends AoCRunnable {
     }
   }
 
-  override val part1: Option[Int] = Some {
+  override lazy val part1: Option[Int] = Some {
     range.count(validPasswordPart1)
   }
 
-  override val part2: Option[Int] = Some {
+  override lazy val part2: Option[Int] = Some {
     range.count(validPasswordPart2)
   }
 }
