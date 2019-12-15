@@ -1,16 +1,17 @@
 package day2
 
 import common.AoCRunnable
-import intcode.Interpreter.{ Program, ProgramOutput, runner }
+import intcode.Interpreter.{ ProgramOutput, runner }
+import intcode.{ Pointer, Program }
 
 object Day2 extends AoCRunnable {
   override type Output = Int
   override val dayNumber: Int = 2
 
-  val program: Program = inputLines().next().split(",").map(_.toInt)
+  val program: Program = Program(inputLines().next().split(",").map(_.toInt))
 
   def setNounAndVerb(noun: Int, verb: Int)(program: Program): Program = {
-    program.updated(1, noun).updated(2, verb)
+    program.setValue(Pointer(1), noun).setValue(Pointer(2), verb)
   }
 
   def processFor(noun: Int, verb: Int): ProgramOutput = {
