@@ -15,9 +15,7 @@ object Interpreter {
     State[(Program, Pointer), NextInstruction] { case (currentProgram, pointer) =>
       val instruction = Instruction.readAt(currentProgram, pointer)
       val newProgram = instruction.applyTo(currentProgram)
-      // This +4 might change with future specs, the new pointer value
-      // should probably be returned by transitionFunction
-      val newPointer = pointer + 4
+      val newPointer = pointer + instruction.numberOfConsumedCells
       ((newProgram, newPointer), newProgram.valueAt(newPointer))
     }
     .iterateUntil(haltCondition)

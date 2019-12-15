@@ -18,6 +18,8 @@ class InterpreterTest extends AoCExampleRunner {
 
     // day 5
     "1002,4,3,4,33" -> "1002,4,3,4,99",
+    "1101,100,-1,4,0" -> "1101,100,-1,4,99",
+    "4,2,99,0" -> "4,2,99,0",
   ).map { case (input, output) =>
     input.split(",").map(_.toInt) -> output.split(",").map(_.toInt)
   }

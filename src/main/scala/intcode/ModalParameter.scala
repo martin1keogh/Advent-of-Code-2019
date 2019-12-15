@@ -20,7 +20,7 @@ object Parameters {
     )
   }
 
-  private def readModal(program: Program, pointer: Pointer, mode: Char): ModalParameter = mode match {
+  def readModal(program: Program, pointer: Pointer, mode: Char): ModalParameter = mode match {
     case '0' => ModalParameter(Left(Pointer(program.valueAt(pointer))))
     case '1' => ModalParameter(Right(program.valueAt(pointer)))
   }
