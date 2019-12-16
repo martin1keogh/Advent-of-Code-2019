@@ -68,7 +68,7 @@ case class Write(
 ) extends Instruction {
   override def applyTo(implicit program: Program): Program = {
     // no specs yet, except that non-zero values means something went wrong
-    assert(input.value.value == 0, s"read non-zero value of ${input.value.value} at ${input.show}")
+    assert(input.value.value == 0, s"read non-zero value of ${input.show}")
     program
   }
 }

@@ -8,7 +8,10 @@ case class InputParameter(
   def value(implicit program: Program): Cell =
     definedFrom.fold(program.valueAt, identity)
 
-  def show: String = definedFrom.merge.toString
+  def show(implicit program: Program): String = definedFrom match {
+    case Left(pointer) => s"$pointer (resolves to ${program.valueAt(pointer)})"
+    case Right(cell)   => cell.toString
+  }
 }
 
 object InputParameter {

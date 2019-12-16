@@ -19,6 +19,9 @@ class InterpreterTest extends AoCExampleRunner with Interpreter {
     "1002,4,3,4,33" -> "1002,4,3,4,99",
     "1101,100,-1,4,0" -> "1101,100,-1,4,99",
     "4,3,99,0" -> "4,3,99,0",
+
+    // test Write() accepts mode
+    "104,0,99" -> "104,0,99",
   ).map { case (input, output) =>
     input.split(",").map(s => Cell(s.toInt)) -> output.split(",").map(s => Cell(s.toInt))
   }
