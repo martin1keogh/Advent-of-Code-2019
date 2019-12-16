@@ -7,48 +7,48 @@ sealed trait Instruction extends Product {
 
 object Instruction {
   def readAt(program: Program, pointer: Pointer): Instruction = {
-    val padded = "%05d".format(program.valueAt(pointer))
+    val padded = "%05d".format(program.valueAt(pointer).value)
     val (reversedModes, opCode) = padded.splitAt(3)
     val modes = reversedModes.reverse
 
     opCode match {
       case "01" => Addition.tupled(Parameters.readForBinaryInstruction(program, pointer, modes))
       case "02" => Multiplication.tupled(Parameters.readForBinaryInstruction(program, pointer, modes))
-      case "03" => Read(OutputParameter(pointer + 1))
-      case "04" => Write(Parameters.readModal(program, pointer + 1, modes.head))
+      case "03" => Read(OutputParameter.read(program, pointer + 1))
+      case "04" => Write(InputParameter.read(program, pointer + 1, modes.head))
     }
   }
 }
 
 sealed trait BinaryInstruction extends Instruction {
-  def lhs: ModalParameter
-  def rhs: ModalParameter
-  def binaryOp(lhs: ModalParameter, rhs: ModalParameter)(implicit program: Program): Int
+  def lhs: InputParameter
+  def rhs: InputParameter
+  def binaryOp(lhs: InputParameter, rhs: InputParameter)(implicit program: Program): Cell
 
   def output: OutputParameter
 
   override def applyTo(implicit program: Program): Program = {
-    program.setValue(output.value, binaryOp(lhs, rhs)(program))
+    program.setValueAt(output.value, binaryOp(lhs, rhs)(program))
   }
 }
 
 case class Addition(
-  lhs: ModalParameter,
-  rhs: ModalParameter,
+  lhs: InputParameter,
+  rhs: InputParameter,
   output: OutputParameter
 ) extends BinaryInstruction {
-  override def binaryOp(lhs: ModalParameter, rhs: ModalParameter)(implicit program: Program): Int = {
-    lhs.dereferencedValue + rhs.dereferencedValue
+  override def binaryOp(lhs: InputParameter, rhs: InputParameter)(implicit program: Program): Cell = {
+    Cell(lhs.value.value + rhs.value.value)
   }
 }
 
 case class Multiplication(
-  lhs: ModalParameter,
-  rhs: ModalParameter,
+  lhs: InputParameter,
+  rhs: InputParameter,
   output: OutputParameter
 ) extends BinaryInstruction {
-  override def binaryOp(lhs: ModalParameter, rhs: ModalParameter)(implicit program: Program): Int = {
-    lhs.dereferencedValue * rhs.dereferencedValue
+  override def binaryOp(lhs: InputParameter, rhs: InputParameter)(implicit program: Program): Cell = {
+    Cell(lhs.value.value * rhs.value.value)
   }
 }
 
@@ -57,18 +57,18 @@ case class Read(
 ) extends Instruction {
   override def applyTo(implicit program: Program): Program = {
     // no real definition of what 'reads input' means yet (or how multiple (intertwined?)
-    // input should be handled... so let's just say it's one for now
+    // input should be handled...) so let's just say it's one for now
     def readValue = 1
-    program.setValue(output.value, readValue)
+    program.setValueAt(output.value, Cell(readValue))
   }
 }
 
 case class Write(
-  input: ModalParameter
+  input: InputParameter
 ) extends Instruction {
   override def applyTo(implicit program: Program): Program = {
     // no specs yet, except that non-zero values means something went wrong
-    assert(!(input.dereferencedValue == 0))
+    assert(input.value.value == 0, s"read non-zero value of ${input.value.value} at ${input.show}")
     program
   }
 }

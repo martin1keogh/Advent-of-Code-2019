@@ -1,13 +1,12 @@
 package intcode
 
 import common.AoCExampleRunner
-import intcode.Interpreter.runner
 
 import scala.collection.immutable.SeqMap
 
-class InterpreterTest extends AoCExampleRunner {
-  type Input = Array[Int]
-  type Output = Array[Int]
+class InterpreterTest extends AoCExampleRunner with Interpreter {
+  type Input = Array[Cell]
+  override type Output = Array[Cell]
 
   val examples: SeqMap[Input, Output] = SeqMap(
     // day 2 related examples
@@ -19,9 +18,9 @@ class InterpreterTest extends AoCExampleRunner {
     // day 5
     "1002,4,3,4,33" -> "1002,4,3,4,99",
     "1101,100,-1,4,0" -> "1101,100,-1,4,99",
-    "4,2,99,0" -> "4,2,99,0",
+    "4,3,99,0" -> "4,3,99,0",
   ).map { case (input, output) =>
-    input.split(",").map(_.toInt) -> output.split(",").map(_.toInt)
+    input.split(",").map(s => Cell(s.toInt)) -> output.split(",").map(s => Cell(s.toInt))
   }
 
   val method: Input => Output = { input =>
