@@ -1,7 +1,9 @@
 package intcode
 
 case class InputParameter(
-  private val definedFrom: Either[Pointer, Cell],
+  // XXX this really should be marked private, but doing so makes sbt crash for now
+  // see https://github.com/sbt/zinc/issues/688
+  definedFrom: Either[Pointer, Cell],
 ) extends AnyVal {
   def value(implicit program: Program): Cell =
     definedFrom.fold(program.valueAt, identity)
