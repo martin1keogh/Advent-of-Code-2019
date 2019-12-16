@@ -23,9 +23,12 @@ class InterpreterTest extends AnyWordSpec with Matchers with Interpreter {
       "4,3,99,0" -> "4,3,99,0",
     ),
 
-    // test Write() accepts mode
     "write instruction modes" -> Seq(
-      "104,0,99" -> "104,0,99",
+      "4,3,104,0,99" -> "4,3,104,0,99",
+    ),
+
+    "non-zero diagnostic code before exit" -> Seq(
+      "104,1,99" -> "104,1,99"
     )
   ).view.mapValues(_.map { case (input, output) =>
     input.split(",").map(s => Cell(s.toInt)) -> output.split(",").map(s => Cell(s.toInt))

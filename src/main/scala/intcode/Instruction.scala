@@ -15,7 +15,7 @@ object Instruction {
       case "01" => Addition.tupled(Parameters.readForBinaryInstruction(program, pointer, modes))
       case "02" => Multiplication.tupled(Parameters.readForBinaryInstruction(program, pointer, modes))
       case "03" => Read(OutputParameter.read(program, pointer + 1))
-      case "04" => Write(InputParameter.read(program, pointer + 1, modes.head))
+      case "04" => Write(InputParameter.read(program, pointer + 1, modes.head), program.valueAt(pointer + 2))
     }
   }
 }
@@ -64,11 +64,14 @@ case class Read(
 }
 
 case class Write(
-  input: InputParameter
+  input: InputParameter,
+  nextInstruction: Cell
 ) extends Instruction {
+  override def numberOfConsumedCells: Int = 2
+
   override def applyTo(implicit program: Program): Program = {
     // no specs yet, except that non-zero values means something went wrong
-    assert(input.value.value == 0, s"read non-zero value of ${input.show}")
+    assert(input.value.value == 0 || nextInstruction.value == 99, s"read non-zero value of ${input.show}")
     program
   }
 }

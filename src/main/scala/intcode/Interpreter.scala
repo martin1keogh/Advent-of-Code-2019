@@ -12,7 +12,6 @@ trait Interpreter {
   }
 
   val runner: State[Program, ProgramOutput] = {
-
     State[(Program, Pointer), NextInstruction] { case (currentProgram, pointer) =>
       val instruction = Instruction.readAt(currentProgram, pointer)
       val newProgram = instruction.applyTo(currentProgram)
