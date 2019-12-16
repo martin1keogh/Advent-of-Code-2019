@@ -1,17 +1,18 @@
 package intcode
 
-import cats.data.State
+import cats.Eval
+import cats.data.{ IndexedStateT, State }
+import cats.syntax.functor._
 import cats.syntax.monad._
 
 trait Interpreter {
-  type ProgramOutput = Int
   private type NextInstruction = Cell
 
   private def haltCondition(instruction: NextInstruction): Boolean = {
     instruction.value == 99
   }
 
-  val runner: State[Program, ProgramOutput] = {
+  val runner: IndexedStateT[Eval, Program, (Program, Pointer), Unit] = {
     State[(Program, Pointer), NextInstruction] { case (currentProgram, pointer) =>
       val instruction = Instruction.readAt(currentProgram, pointer)
       val newProgram = instruction.applyTo(currentProgram)
@@ -20,9 +21,6 @@ trait Interpreter {
     }
     .iterateUntil(haltCondition)
     .contramap[Program](_ -> Pointer(0)) // add the value of the starting pointer
-    .transform { case ((program, _), _) =>
-      program -> program.result.value   // change the output of the program to be program[0], not the next instruction
-    }
-
+    .as(())
   }
 }

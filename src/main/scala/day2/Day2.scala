@@ -9,10 +9,15 @@ object Day2 extends AocRunnableInterpreter {
     program.setValueAt(Pointer(1), Cell(noun)).setValueAt(Pointer(2), Cell(verb))
   }
 
-  def processFor(noun: Int, verb: Int): ProgramOutput = {
+  val getResult: ((Program, Pointer)) => Int = { case (program, _) =>
+    program.underlying.head.value
+  }
+
+  def processFor(noun: Int, verb: Int): Int = {
     runner
       .contramap[Program](setNounAndVerb(noun, verb))
-      .runA(program)
+      .modify(getResult)
+      .runS(program)
       .value
   }
 

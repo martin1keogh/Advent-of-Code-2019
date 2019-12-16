@@ -35,7 +35,7 @@ class InterpreterTest extends AnyWordSpec with Matchers with Interpreter {
   }).to(SeqMap)
 
   val method: Input => Output = { input =>
-    runner.runS(Program(input)).value.underlying
+    runner.runS(Program(input)).value._1.underlying
   }
 
   "Interpreter#runner" should afterWord("validate") {

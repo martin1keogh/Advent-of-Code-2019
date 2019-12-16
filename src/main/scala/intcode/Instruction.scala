@@ -72,6 +72,6 @@ case class Write(
   override def applyTo(implicit program: Program): Program = {
     // no specs yet, except that non-zero values means something went wrong
     assert(input.value.value == 0 || nextInstruction.value == 99, s"read non-zero value of ${input.show}")
-    program
+    program.copy(lastDiagnosticCode = Some(input.value))
   }
 }
