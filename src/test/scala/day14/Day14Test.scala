@@ -5,25 +5,13 @@ import day14.Day14._
 
 import scala.collection.SeqMap
 
-class Day14Test extends AoCExampleRunner {
+abstract class Day14Test extends AoCExampleRunner {
   override type Input = String
   override type Output = Quantity
-  override val examples: SeqMap[Input, Output] = SeqMap(
-    """10 ORE => 10 A
-      |1 ORE => 1 B
-      |7 A, 1 B => 1 C
-      |7 A, 1 C => 1 D
-      |7 A, 1 D => 1 E
-      |7 A, 1 E => 1 FUEL""".stripMargin -> 31,
 
-    """9 ORE => 2 A
-      |8 ORE => 3 B
-      |7 ORE => 5 C
-      |3 A, 4 B => 1 AB
-      |5 B, 7 C => 1 BC
-      |4 C, 1 A => 1 CA
-      |2 AB, 3 BC, 4 CA => 1 FUEL""".stripMargin -> 165,
+  val solutions: Seq[Output]
 
+  override val examples: SeqMap[Input, Output] = Seq(
     """157 ORE => 5 NZVS
       |165 ORE => 6 DCFZ
       |44 XJWVT, 5 KHKGT, 1 QDVJ, 29 NZVS, 9 GPVTF, 48 HKGWZ => 1 FUEL
@@ -32,7 +20,7 @@ class Day14Test extends AoCExampleRunner {
       |177 ORE => 5 HKGWZ
       |7 DCFZ, 7 PSHF => 2 XJWVT
       |165 ORE => 2 GPVTF
-      |3 DCFZ, 7 NZVS, 5 HKGWZ, 10 PSHF => 8 KHKGT""".stripMargin -> 13312,
+      |3 DCFZ, 7 NZVS, 5 HKGWZ, 10 PSHF => 8 KHKGT""".stripMargin,
 
     """2 VPVL, 7 FWMGM, 2 CXFTF, 11 MNCFX => 1 STKFG
       |17 NVRVD, 3 JNWZP => 8 VPVL
@@ -45,7 +33,7 @@ class Day14Test extends AoCExampleRunner {
       |145 ORE => 6 MNCFX
       |1 NVRVD => 8 CXFTF
       |1 VJHF, 6 MNCFX => 4 RFSQX
-      |176 ORE => 6 VJHF""".stripMargin -> 180697,
+      |176 ORE => 6 VJHF""".stripMargin,
 
     """171 ORE => 8 CNZTR
       |7 ZLQW, 3 BMBT, 9 XCVML, 26 XMNCP, 1 WPTQ, 2 MZWV, 1 RJRHP => 4 PLWSL
@@ -63,12 +51,28 @@ class Day14Test extends AoCExampleRunner {
       |3 BHXH, 2 VRPVC => 7 MZWV
       |121 ORE => 7 VRPVC
       |7 XCVML => 6 RJRHP
-      |5 BHXH, 4 VRPVC => 5 LTCX""".stripMargin -> 2210736
+      |5 BHXH, 4 VRPVC => 5 LTCX""".stripMargin
+  ).zip(solutions).to(SeqMap)
+
+  "process" should { behave like examplesSolver() }
+}
+
+class Day14Part1Test extends Day14Test {
+  override lazy val solutions: Seq[Quantity] = Seq(
+    13312L, 180697, 2210736
   )
 
   override def method: String => Day14.Quantity = { s =>
-    findFuelOreConversion(s.split("\\n").map(parseReaction).toList)._2
+    findFuelOreConversion(s.split("\\n").map(parseReaction).toList, desiredFuelQuantity = 1)
   }
+}
 
-  "process" should { behave like examplesSolver() }
+class Day14Part2Test extends Day14Test {
+  override lazy val solutions: Seq[Quantity] = Seq(
+    82892753L, 5586022, 460664
+  )
+
+  override def method: String => Day14.Quantity = { s =>
+    findFuelForOneTrillionOre(s.split("\\n").map(parseReaction).toList)
+  }
 }
