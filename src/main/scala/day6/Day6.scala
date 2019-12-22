@@ -3,6 +3,7 @@ package day6
 import cats.data.ReaderWriterState
 import cats.kernel.instances.int._
 import cats.instances.list.{catsKernelStdMonoidForList => _, _}
+import cats.syntax.foldable._
 import cats.syntax.monad._
 import cats.syntax.traverse._
 import common.AoCRunnable
@@ -30,7 +31,18 @@ object Day6 extends AoCRunnable {
     }(_.isEmpty).runEmptyL(()).value
   }
 
+  def numberOfOrbitsRec(relationships: Map[String, List[String]]): Output = {
+    def aux(planet: String, level: Int): Output = {
+      relationships.get(planet).fold(0)(_.foldMap(level + aux(_, level + 1)))
+    }
+
+    aux(COM, level = 1)
+  }
+
   override lazy val part1: Option[Int] = Some {
-    numberOfOrbits(orbitalRelationships)
+    val v1 = numberOfOrbits(orbitalRelationships)
+    val v2 = numberOfOrbitsRec(orbitalRelationships)
+    assert(v1 == v2, s"$v1 != $v2")
+    v1
   }
 }
