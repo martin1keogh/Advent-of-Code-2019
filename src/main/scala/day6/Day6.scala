@@ -4,8 +4,6 @@ import cats.data.ReaderWriterState
 import cats.kernel.instances.int._
 import cats.instances.list.{catsKernelStdMonoidForList => _, _}
 import cats.syntax.foldable._
-import cats.syntax.monad._
-import cats.syntax.traverse._
 import common.AoCRunnable
 
 object Day6 extends AoCRunnable {
@@ -18,18 +16,8 @@ object Day6 extends AoCRunnable {
 
   lazy val orbitalRelationships: Map[String, List[String]] = parseInput(inputLines().toArray).groupMap(_._1)(_._2)
   val COM: String = "COM"
-
-  type RWS[A] = ReaderWriterState[Unit, Int, Int, A]
-
-  def numberOfOrbits(relationships: Map[String, List[String]]): Output = {
-    List(COM).iterateUntilM[RWS] { children =>
-      for {
-        depth      <- ReaderWriterState.modify((previousDepth: Int) => previousDepth + 1).get
-        satellites =  children.flatMap(relationships.getOrElse(_, List.empty))
-        _          <- satellites.traverse[RWS, Unit](_ => ReaderWriterState.tell(depth))
-      } yield satellites
-    }(_.isEmpty).runEmptyL(()).value
-  }
+  val YOU: String = "YOU"
+  val SAN: String = "SAN"
 
   def numberOfOrbitsRec(relationships: Map[String, List[String]]): Output = {
     def aux(planet: String, level: Int): Output = {
@@ -39,10 +27,34 @@ object Day6 extends AoCRunnable {
     aux(COM, level = 1)
   }
 
+  type RWS[A] = ReaderWriterState[Unit, Int, Int, A]
+
+  def numberOfOrbitsFromYouToSanta(relationships: Map[String, List[String]]): Option[Output] = {
+    val twoWayRelationships: Map[String, List[String]] = {
+      relationships
+        .toList
+        .flatMap { case (from, tos) => tos.map(from -> _) ++ tos.map(_ -> from) }
+        .groupMap(_._1)(_._2)
+        .view.mapValues(_.toList)
+        .toMap
+    }
+
+    def aux(planet: String, seen: Set[String]): Option[Output] = {
+      twoWayRelationships.get(planet) match {
+        case None => None
+        case Some(l) if !l.contains(SAN) => l.filterNot(seen).flatMap(aux(_, seen + planet).map(_ + 1)).minOption
+        case _ => Some(0)
+      }
+    }
+
+    aux(YOU, Set()).map(_ - 1)
+  }
+
   override lazy val part1: Option[Int] = Some {
-    val v1 = numberOfOrbits(orbitalRelationships)
-    val v2 = numberOfOrbitsRec(orbitalRelationships)
-    assert(v1 == v2, s"$v1 != $v2")
-    v1
+    numberOfOrbitsRec(orbitalRelationships)
+  }
+
+  override lazy val part2: Option[Int] = {
+    numberOfOrbitsFromYouToSanta(orbitalRelationships)
   }
 }

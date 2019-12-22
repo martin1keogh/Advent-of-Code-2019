@@ -19,12 +19,14 @@ class Day6Test extends AoCExampleRunner {
       |D)I
       |E)J
       |J)K
-      |K)L""".stripMargin.split("\\n") -> 42
+      |K)L
+      |K)YOU
+      |I)SAN""".stripMargin.split("\\n") -> 4
   ).map { case (k, v) =>
     parseInput(k) -> v
   }
 
-  override def method: Input => Output = input => numberOfOrbits(input.groupMap(_._1)(_._2))
+  override def method: Input => Output = input => numberOfOrbitsFromYouToSanta(input.groupMap(_._1)(_._2)).get
 
   "process" should { behave like examplesSolver() }
 }
