@@ -16,4 +16,11 @@ object Day8 extends AoCRunnable{
     val leastZeros = layers.minBy(_.count(_ == '0'))
     leastZeros.count(_ == '1') * leastZeros.count(_ == '2')
   }
+
+  override lazy val part2: Option[Int] = {
+    val perPixel: List[List[Char]] = layers.transpose.flatten.grouped(layers.length).toList
+    val rows = perPixel.map(_.find(_ != '2').get).grouped(width).toList
+    rows.foreach(row => println(row.map { case '0' => ' '; case '1' => '#' }.mkString))
+    Some(0) // no 'computable' result this time
+  }
 }
